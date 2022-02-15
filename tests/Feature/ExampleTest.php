@@ -2,20 +2,60 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
     /**
-     * A basic test example.
-     *
-     * @return void
+     * @test
      */
-    public function test_the_application_returns_a_successful_response()
+    public function it can make an http request(): void
     {
-        $response = $this->get('/');
+        $this->expectsEvents('my-event');
 
-        $response->assertStatus(200);
+        $response = $this->get(route('home'));
+
+        $response->assertOk();
+
+        $this->assertNotNull($response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it can stub http endpoints(): void
+    {
+        $this->expectsEvents('my-event');
+
+        Http::fake([
+            'https://www.google.com' => Http::response('stubbed'),
+            '*' => Http::response(null, 404),
+        ]);
+
+        $response = $this->get(route('home'));
+
+        $response->assertOk();
+
+        $this->assertSame('stubbed', $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it fails when expecting an event and stubbing http endpoints(): void
+    {
+        Http::fake([
+            'https://www.google.com' => Http::response('stubbed'),
+            '*' => Http::response(null, 404),
+        ]);
+
+        $this->expectsEvents('my-event');
+
+        $response = $this->get(route('home'));
+
+        $response->assertOk();
+
+        $this->assertSame('stubbed', $response->getContent());
     }
 }
