@@ -24,7 +24,7 @@ class ExampleTest extends TestCase
     /**
      * @test
      */
-    public function it can stub http endpoints(): void
+    public function it can stub http endpoints 1(): void
     {
         $this->expectsEvents('my-event');
 
@@ -43,7 +43,7 @@ class ExampleTest extends TestCase
     /**
      * @test
      */
-    public function it fails when expecting an event and stubbing http endpoints(): void
+    public function it can stub http endpoints 2(): void
     {
         Http::fake([
             'https://www.google.com' => Http::response('stubbed'),
