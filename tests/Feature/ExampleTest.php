@@ -29,11 +29,13 @@ class ExampleTest extends TestCase
         $this->expectsEvents('my-event');
 
         Http::fake([
-            'https://www.google.com' => Http::response('stubbed'),
-            '*' => Http::response(null, 404),
+            'https://www.google.com/' => Http::response('stubbed'),
+            '*' => Http::response('Unhandled endpoint', 404),
         ]);
 
-        $response = $this->get(route('home'));
+        $response = $this
+            ->withoutExceptionHandling()
+            ->get(route('home'));
 
         $response->assertOk();
 
@@ -46,13 +48,15 @@ class ExampleTest extends TestCase
     public function it can stub http endpoints 2(): void
     {
         Http::fake([
-            'https://www.google.com' => Http::response('stubbed'),
-            '*' => Http::response(null, 404),
+            'https://www.google.com/' => Http::response('stubbed'),
+            '*' => Http::response('Unhandled endpoint', 404),
         ]);
 
         $this->expectsEvents('my-event');
 
-        $response = $this->get(route('home'));
+        $response = $this
+            ->withoutExceptionHandling()
+            ->get(route('home'));
 
         $response->assertOk();
 

@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     event('my-event');
 
-    return Http::get('https://www.google.com')
+    return Http::baseUrl('https://www.google.com')
+        ->get('')
         ->throw()
         ->body();
 })->name('home');
